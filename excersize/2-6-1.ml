@@ -5,6 +5,4 @@ US ドル (実数) を受け取って円 (整数) に換算する関数 (ただ�
 *)
 
 let dollar_to_yen(dollar : float) : int =
-  let yen = dollar *. 112.12 in
-  let carry = if ((yen -. floor(yen)) > 0.5) then 1 else 0 in
-  int_of_float(yen) + carry;;
+  int_of_float(dollar *. 112.12 +. 0.5);;
