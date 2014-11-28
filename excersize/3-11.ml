@@ -2,18 +2,21 @@
 1. Euclid の互除法で二整数の最大公約数を求める関数 gcd.
 *)
 
-let rec gcd m, n =
-  if n == 0 then
+let rec gcd m n =
+  if n = 0 then
     m
   else
-    gcd n, m mod n;;
+    gcd n (m mod n);;
 
 (*
 2. テキストの再帰的な定義で (n m)を求める関数 comb．
 *)
 
-let rec comb n, m =
-  ;;
+let rec comb n m =
+  if m = 0 || m = n then
+    1
+  else
+    (comb (n - 1) m) + (comb (n - 1) (m - 1));;
 
 (*
 3. 末尾再帰的関数を使ってフィボナッチ数を計算する fib_iter．(fib_pair を元にするとよい．)
