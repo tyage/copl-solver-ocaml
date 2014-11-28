@@ -39,3 +39,13 @@ let fib_iter n =
 (この問題は意図的に「なにかが足りない」ように設定してあります．
 欲しい機能・関数があればマニュアルを調べたり，プログラム上で工夫してください．)
 *)
+
+let max_ascii str =
+  let rec iter max i =
+    if String.length str == i then
+      max
+    else if max < str.[i] then
+      iter str.[i] (i + 1)
+    else
+      iter max (i + 1)
+  in iter str.[0] 0
