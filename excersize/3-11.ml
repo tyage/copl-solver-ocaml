@@ -27,6 +27,11 @@ let rec fib_pair n =
   else
     let (prev, curr) = fib_pair (n - 1) in (curr, curr + prev);;
 
+let fib_iter n =
+  let rec iter n (prev, curr) =
+    if n = 1 then curr
+    else iter (n - 1) (curr, prev + curr)
+  in iter n (0, 1);;
 
 (*
 4. 与えられた文字列のなかで ASCII コードが最も大きい文字を返す max_ascii 関数
