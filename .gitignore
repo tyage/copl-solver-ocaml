@@ -1,3 +1,5 @@
 *.[oa]
 *.cm[oiax]
 *.cmxa
+oUnit-*.log
+oUnit-*.cache
