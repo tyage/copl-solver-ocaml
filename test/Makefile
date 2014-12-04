@@ -8,3 +8,4 @@ test.bin: test.ml
 
 clean:
 	rm *.cmo *.cmi test.bin
+	rm ../excersize/*.cmo ../excersize/*.cmi test.bin
