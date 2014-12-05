@@ -24,8 +24,17 @@ let ex_2_6_3 =
   "五入">:: test2]
 ;;
 
+let ex_2_6_4 =
+  let cap () = assert_equal (Ex_2_6_4.capitalize 'h') 'H' in
+  let not_cap () = assert_equal (Ex_2_6_4.capitalize '1') '1' in
+  "ex2_6_1">:::
+  ["capitalize">:: cap;
+  "not capitalize">:: not_cap]
+;;
+
 let _ =
 run_test_tt_main ex_2_6_1;
 run_test_tt_main ex_2_6_2;
 run_test_tt_main ex_2_6_3;
+run_test_tt_main ex_2_6_4;
 ;;
