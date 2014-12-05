@@ -76,6 +76,12 @@ let ex_4_5 =
   ["fib">:: fib]
 ;;
 
+let ex_4_7 =
+  let ret_y _ = assert_equal (Ex_4_7.ret_y 4 2) 2 in
+  "ex_3_11">:::
+  ["ret_y">:: ret_y]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -87,4 +93,5 @@ let _ =
   run_test_tt_main ex_4_1;
   run_test_tt_main ex_4_4;
   run_test_tt_main ex_4_5;
+  run_test_tt_main ex_4_7;
 ;;
