@@ -38,6 +38,12 @@ let ex_3_7_1 =
   ["pow">:: pow]
 ;;
 
+let ex_3_7_2 =
+  let pow () = assert_equal (Ex_3_7_2.pow 4.0 2) 16.0 in
+  "ex_3_7_2">:::
+  ["pow">:: pow]
+;;
+
 let ex_3_11 =
   let gcd () = assert_equal (Ex_3_11.gcd 35 14) 7 in
   let comb () = assert_equal (Ex_3_11.comb 5 2) 10 in
@@ -56,5 +62,6 @@ run_test_tt_main ex_2_6_2;
 run_test_tt_main ex_2_6_3;
 run_test_tt_main ex_2_6_4;
 run_test_tt_main ex_3_7_1;
+run_test_tt_main ex_3_7_2;
 run_test_tt_main ex_3_11;
 ;;
