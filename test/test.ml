@@ -56,6 +56,13 @@ let ex_3_11 =
   "max_ascii">:: max_ascii]
 ;;
 
+let ex_4_1 =
+  let pi = 4.0 *. atan 1.0 in
+  let calc_pi () = assert_equal (int_of_float ((Ex_4_1.integral sin 0.0 pi) +. 0.1)) 2 in
+  "ex_3_11">:::
+  ["calc_pi">:: calc_pi]
+;;
+
 let _ =
 run_test_tt_main ex_2_6_1;
 run_test_tt_main ex_2_6_2;
@@ -64,4 +71,5 @@ run_test_tt_main ex_2_6_4;
 run_test_tt_main ex_3_7_1;
 run_test_tt_main ex_3_7_2;
 run_test_tt_main ex_3_11;
+run_test_tt_main ex_4_1;
 ;;
