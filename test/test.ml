@@ -32,9 +32,22 @@ let ex_2_6_4 =
   "not capitalize">:: not_cap]
 ;;
 
+let ex_3_11 =
+  let gcd () = assert_equal (Ex_3_11.gcd 35 14) 7 in
+  let comb () = assert_equal (Ex_3_11.comb 5 2) 10 in
+  let fib () = assert_equal (Ex_3_11.fib_iter 10) 55 in
+  let max_ascii () = assert_equal (Ex_3_11.max_ascii "jvDzZe") 'z' in
+  "ex2_6_1">:::
+  ["gcd">:: gcd;
+  "comb">:: comb;
+  "fib">:: fib;
+  "max_ascii">:: max_ascii]
+;;
+
 let _ =
 run_test_tt_main ex_2_6_1;
 run_test_tt_main ex_2_6_2;
 run_test_tt_main ex_2_6_3;
 run_test_tt_main ex_2_6_4;
+run_test_tt_main ex_3_11;
 ;;
