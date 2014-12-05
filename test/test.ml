@@ -63,6 +63,13 @@ let ex_4_1 =
   ["calc_pi">:: calc_pi]
 ;;
 
+let ex_4_4 =
+  let avg = Ex_4_4.uncurry Ex_4_4.curried_avg in
+  let calc_avg () = assert_equal (avg (4.0, 5.3)) 4.65 in
+  "ex_3_11">:::
+  ["calc_avg">:: calc_avg]
+;;
+
 let _ =
 run_test_tt_main ex_2_6_1;
 run_test_tt_main ex_2_6_2;
@@ -72,4 +79,5 @@ run_test_tt_main ex_3_7_1;
 run_test_tt_main ex_3_7_2;
 run_test_tt_main ex_3_11;
 run_test_tt_main ex_4_1;
+run_test_tt_main ex_4_4;
 ;;
