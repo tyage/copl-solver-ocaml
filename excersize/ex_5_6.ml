@@ -4,3 +4,19 @@ quicker は未ソートのリスト l と，sorted というソート済でそ�
 定義を完成させよ．
 let rec quicker l sorted = ...
 *)
+
+let rec append l1 l2 =
+  match l1 with
+  [] -> l2
+  | x :: rest -> x :: (append rest l2);;
+
+let rec quicker l sorted =
+  match l with
+  [] -> sorted
+  | [x] -> x :: sorted
+  | x :: xs ->
+    let rec partition left right = function
+    [] -> (append (quicker left []) (x :: quicker right sorted))
+    | y :: ys -> if x < y then partition left (y :: right) ys
+      else partition (y :: left) right ys in
+    partition [] [] xs;;

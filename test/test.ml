@@ -106,6 +106,12 @@ let ex_5_4 =
   ["map">:: map]
 ;;
 
+let ex_5_6 =
+  let sort _ = assert_equal (Ex_5_6.quicker [7; 4; 9; 1; 2; 8] []) [1; 2; 4; 7; 8; 9] in
+  "ex_5_6">:::
+  ["sort">:: sort]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -120,4 +126,5 @@ let _ =
   run_test_tt_main ex_4_7;
   run_test_tt_main ex_5_3;
   run_test_tt_main ex_5_4;
+  run_test_tt_main ex_5_6;
 ;;
