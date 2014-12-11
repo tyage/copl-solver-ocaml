@@ -59,26 +59,26 @@ let ex_3_11 =
 let ex_4_1 =
   let pi = 4.0 *. atan 1.0 in
   let calc_pi _ = assert_equal (int_of_float ((Ex_4_1.integral sin 0.0 pi) +. 0.1)) 2 in
-  "ex_3_11">:::
+  "ex_4_1">:::
   ["calc_pi">:: calc_pi]
 ;;
 
 let ex_4_4 =
   let avg = Ex_4_4.uncurry Ex_4_4.curried_avg in
   let calc_avg _ = assert_equal (avg (4.0, 5.3)) 4.65 in
-  "ex_3_11">:::
+  "ex_4_4">:::
   ["calc_avg">:: calc_avg]
 ;;
 
 let ex_4_5 =
   let fib _ = assert_equal (Ex_4_5.fib 10) 55 in
-  "ex_3_11">:::
+  "ex_4_5">:::
   ["fib">:: fib]
 ;;
 
 let ex_4_7 =
   let ret_y _ = assert_equal (Ex_4_7.ret_y 4 2) 2 in
-  "ex_3_11">:::
+  "ex_4_7">:::
   ["ret_y">:: ret_y]
 ;;
 
