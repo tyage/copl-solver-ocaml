@@ -121,9 +121,13 @@ let ex_6_2 =
   let six = Ex_6_2.OneMoreThan five in
   let int_of_nat _ = assert_equal (Ex_6_2.int_of_nat three) 3 in
   let mul _ = assert_equal (Ex_6_2.mul two three) six in
+  let monus _ = assert_equal (Ex_6_2.monus six four) two in
+  let monus_under_zero _ = assert_equal (Ex_6_2.monus two four) Ex_6_2.Zero in
   "ex_6_2">:::
   ["int_of_nat">:: int_of_nat;
-  "mul">:: mul;]
+  "mul">:: mul;
+  "monus">:: monus;
+  "monus_under_zero">:: monus_under_zero;]
 ;;
 
 let _ =

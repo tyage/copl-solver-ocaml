@@ -21,4 +21,9 @@ let rec mul m n =
   Zero -> Zero
   | OneMoreThan m' -> add n (mul m' n);;
 
-let monus _ = Zero;;
+let rec monus m n =
+  match n with
+  Zero -> m
+  | OneMoreThan n' -> match m with
+    Zero -> Zero
+    | OneMoreThan m' -> monus m' n';;
