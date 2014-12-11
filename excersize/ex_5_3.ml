@@ -23,8 +23,7 @@ roman [(1000, "M"); (900, "CM"); (500, "D"); (400, "CD"); (100, "C"); (90, "XC")
 3. 与えられたリストのリストに対し，内側のリストの要素を並べたリストを返す関数 concat．
 concat [[0; 3; 4]; [2]; [5; 0]; []] = [0; 3; 4; 2; 5; 0]
 *)
-let rec concat l =
-  match l with
+let rec concat = function
   [] -> []
   | head :: rest_list -> match head with
     [] -> (concat rest_list)
