@@ -112,6 +112,20 @@ let ex_5_6 =
   ["sort">:: sort]
 ;;
 
+let ex_6_2 =
+  let one = Ex_6_2.OneMoreThan Ex_6_2.Zero in
+  let two = Ex_6_2.OneMoreThan one in
+  let three = Ex_6_2.OneMoreThan two in
+  let four = Ex_6_2.OneMoreThan three in
+  let five = Ex_6_2.OneMoreThan four in
+  let six = Ex_6_2.OneMoreThan five in
+  let int_of_nat _ = assert_equal (Ex_6_2.int_of_nat three) 3 in
+  let mul _ = assert_equal (Ex_6_2.mul two three) six in
+  "ex_6_2">:::
+  ["int_of_nat">:: int_of_nat;
+  "mul">:: mul;]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -127,4 +141,5 @@ let _ =
   run_test_tt_main ex_5_3;
   run_test_tt_main ex_5_4;
   run_test_tt_main ex_5_6;
+  run_test_tt_main ex_6_2;
 ;;
