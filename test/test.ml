@@ -100,6 +100,12 @@ let ex_5_3 =
   "filter">:: filter;]
 ;;
 
+let ex_5_4 =
+  let map _ = assert_equal (Ex_5_4.answer [4; 5; 6]) (Ex_5_4.map Ex_5_4.f (Ex_5_4.map Ex_5_4.g [4; 5; 6])) in
+  "ex_5_4">:::
+  ["map">:: map]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -113,4 +119,5 @@ let _ =
   run_test_tt_main ex_4_5;
   run_test_tt_main ex_4_7;
   run_test_tt_main ex_5_3;
+  run_test_tt_main ex_5_4;
 ;;
