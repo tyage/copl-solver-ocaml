@@ -136,7 +136,13 @@ let ex_6_6 =
     Ex_6_6.Br (2, Ex_6_6.Br (5, Ex_6_6.Lf, Ex_6_6.Lf), Ex_6_6.Br (4, Ex_6_6.Lf, Ex_6_6.Lf))) in
   let reflect _ = assert_equal (Ex_6_6.reflect Ex_6_6.comptree) reflect_comptree in
   "ex_6_6">:::
-  ["reflect">:: reflect]
+  ["reflect">:: reflect;]
+;;
+
+let ex_6_9 =
+  let shift _ = assert_equal (Ex_6_9.take 4 (Ex_6_9.shift 2 (Ex_6_9.from 0))) [1; 3; 5; 7] in
+  "ex_6_9">:::
+  ["shift">:: shift;]
 ;;
 
 let _ =
@@ -156,4 +162,5 @@ let _ =
   run_test_tt_main ex_5_6;
   run_test_tt_main ex_6_2;
   run_test_tt_main ex_6_6;
+  run_test_tt_main ex_6_9;
 ;;
