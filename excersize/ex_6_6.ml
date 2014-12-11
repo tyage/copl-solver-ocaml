@@ -20,3 +20,9 @@ let comptree = Br(1, Br(2, Br(4, Lf, Lf),
 let rec reflect = function
   Lf -> Lf
   | Br (value, left, right) -> Br (value, reflect right, reflect left);;
+
+(*
+preorder(reflect(t)) = reverse(postorder(t))
+inorder(reflect(t)) = reverse(inorder(t))
+postorder(reflect(t)) = reverse(preorder(t))
+*)
