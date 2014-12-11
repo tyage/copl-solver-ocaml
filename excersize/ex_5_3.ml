@@ -40,7 +40,6 @@ let rec zip a b =
   | [], _ -> []
   | head_a :: rest_a, head_b :: rest_b -> (head_a, head_b) :: (zip rest_a rest_b);;
 
-
 (*
 5. リストと，リストの要素上の述語 ( bool 型を返す関数) p をとって，p を満たす全ての要素のリストを返す関数 filter．
 # let positive x = (x > 0);;
@@ -50,6 +49,10 @@ val positive : int -> bool = <fun>
 # filter (fun l -> length l = 3) [[1; 2; 3]; [4; 5]; [6; 7; 8]; [9]];;
 - : int list list = [[1; 2; 3]; [6; 7; 8]]
 *)
+let rec filter f l =
+  match l with
+  [] -> []
+  | head :: rest -> if f head then head :: (filter f rest) else (filter f rest);;
 
 (*
 6. リストを集合とみなして，以下の集合演算をする関数を定義せよ．

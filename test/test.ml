@@ -87,11 +87,17 @@ let ex_5_3 =
   let concat _ = assert_equal (Ex_5_3.concat [[0; 3; 4]; [2]; [5; 0]; []]) [0; 3; 4; 2; 5; 0] in
   let zip_normal _ = assert_equal (Ex_5_3.zip [5; 3; 2] [7; 4; 0]) [(5, 7); (3, 4); (2, 0)] in
   let zip_diff_length _ = assert_equal (Ex_5_3.zip [5; 3; 2; 4; 4] [7; 4; 0]) [(5, 7); (3, 4); (2, 0)] in
+  let rec length = function
+    [] -> 0
+    | _ :: rest -> 1 + length rest in
+  let filter _ = assert_equal
+    (Ex_5_3.filter (fun l -> length l = 3) [[1; 2; 3]; [4; 5]; [6; 7; 8]; [9]]) [[1; 2; 3]; [6; 7; 8]] in
   "ex_5_3">:::
   ["downfrom5to0">:: downfrom5to0;
   "concat">:: concat;
   "zip_normal">:: zip_normal;
-  "zip_diff_length">:: zip_diff_length;]
+  "zip_diff_length">:: zip_diff_length;
+  "filter">:: filter;]
 ;;
 
 let _ =
