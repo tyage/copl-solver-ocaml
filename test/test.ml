@@ -82,6 +82,12 @@ let ex_4_7 =
   ["ret_y">:: ret_y]
 ;;
 
+let ex_5_3 =
+  let downfrom5to0 _ = assert_equal (Ex_5_3.downto0 5) [5; 4; 3; 2; 1; 0] in
+  "ex_5_3">:::
+  ["downfrom5to0">:: downfrom5to0]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
