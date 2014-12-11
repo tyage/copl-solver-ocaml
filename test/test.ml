@@ -130,6 +130,15 @@ let ex_6_2 =
   "monus_under_zero">:: monus_under_zero;]
 ;;
 
+let ex_6_6 =
+  let reflect_comptree = Ex_6_6.Br (1, Ex_6_6.Br (3, Ex_6_6.Br
+    (7, Ex_6_6.Lf, Ex_6_6.Lf), Ex_6_6.Br (6, Ex_6_6.Lf, Ex_6_6.Lf)),
+    Ex_6_6.Br (2, Ex_6_6.Br (5, Ex_6_6.Lf, Ex_6_6.Lf), Ex_6_6.Br (4, Ex_6_6.Lf, Ex_6_6.Lf))) in
+  let reflect _ = assert_equal (Ex_6_6.reflect Ex_6_6.comptree) reflect_comptree in
+  "ex_6_6">:::
+  ["reflect">:: reflect]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -146,4 +155,5 @@ let _ =
   run_test_tt_main ex_5_4;
   run_test_tt_main ex_5_6;
   run_test_tt_main ex_6_2;
+  run_test_tt_main ex_6_6;
 ;;
