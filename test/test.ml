@@ -84,8 +84,10 @@ let ex_4_7 =
 
 let ex_5_3 =
   let downfrom5to0 _ = assert_equal (Ex_5_3.downto0 5) [5; 4; 3; 2; 1; 0] in
+  let concat _ = assert_equal (Ex_5_3.concat [[0; 3; 4]; [2]; [5; 0]; []]) [0; 3; 4; 2; 5; 0] in
   "ex_5_3">:::
-  ["downfrom5to0">:: downfrom5to0]
+  ["downfrom5to0">:: downfrom5to0;
+  "concat">:: concat]
 ;;
 
 let _ =
@@ -100,4 +102,5 @@ let _ =
   run_test_tt_main ex_4_4;
   run_test_tt_main ex_4_5;
   run_test_tt_main ex_4_7;
+  run_test_tt_main ex_5_3;
 ;;

@@ -18,10 +18,17 @@ roman [(1000, "M"); (900, "CM"); (500, "D"); (400, "CD"); (100, "C"); (90, "XC")
 となるようにせよ．
 *)
 
+
 (*
 3. 与えられたリストのリストに対し，内側のリストの要素を並べたリストを返す関数 concat．
 concat [[0; 3; 4]; [2]; [5; 0]; []] = [0; 3; 4; 2; 5; 0]
 *)
+let rec concat l =
+  match l with
+  [] -> []
+  | head :: rest_list -> match head with
+    [] -> (concat rest_list)
+    | x :: rest_elem -> x :: (concat (rest_elem :: rest_list));;
 
 (*
 4. 二つのリスト [a1; ...; an] と [b1; ...; bn] を引数として，[(a1, b1); ...; (an, bn)]
