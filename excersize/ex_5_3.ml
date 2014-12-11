@@ -34,6 +34,12 @@ let rec concat l =
 4. 二つのリスト [a1; ...; an] と [b1; ...; bn] を引数として，[(a1, b1); ...; (an, bn)]
 を返す関数 zip．(与えられたリストの長さが異なる場合は長いリストの余った部分を捨ててよい．)
 *)
+let rec zip a b =
+  match a, b with
+  _, [] -> []
+  | [], _ -> []
+  | head_a :: rest_a, head_b :: rest_b -> (head_a, head_b) :: (zip rest_a rest_b);;
+
 
 (*
 5. リストと，リストの要素上の述語 ( bool 型を返す関数) p をとって，p を満たす全ての要素のリストを返す関数 filter．
