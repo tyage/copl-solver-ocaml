@@ -15,3 +15,8 @@ let rec shift n (Cons (x, t)) =
     (Cons (head tail_seq, fun() -> shift n (tail tail_seq)))
   else
     (Cons (x, fun() -> shift n tail_seq));;
+
+let prime n =
+  let rec prime_seq (Cons (x, f)) = Cons (x, fun() -> prime_seq (shift x (f ()))) in
+  let rec take_last n s = if n = 1 then head s else take_last (n - 1) (tail s) in
+  take_last n (prime_seq (from 2));;

@@ -141,8 +141,10 @@ let ex_6_6 =
 
 let ex_6_9 =
   let shift _ = assert_equal (Ex_6_9.take 4 (Ex_6_9.shift 2 (Ex_6_9.from 0))) [1; 3; 5; 7] in
+  let prime _ = assert_equal (Ex_6_9.prime (3000 + 9540)) 134503 in
   "ex_6_9">:::
-  ["shift">:: shift;]
+  ["shift">:: shift;
+  "prime">:: prime;]
 ;;
 
 let _ =
