@@ -7,5 +7,5 @@ test.bin: test.ml
 	ocamlfind ocamlc -package oUnit -linkpkg -I ../exercise -g -o $@ ../exercise/*.ml test.ml
 
 clean:
-	rm -f *.cm[iox] test.bin
+	rm -f *.cm[iox] test.bin *.log *.cache
 	rm -f ../exercise/*.cm[iox]
