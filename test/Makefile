@@ -1,11 +1,11 @@
 .PHONY: test clean
 
-test: test.bin
-	./test.bin
+test: exercise.o
+	./exercise.o
 
-test.bin: test.ml
-	ocamlfind ocamlc -package oUnit -linkpkg -I ../exercise -g -o $@ ../exercise/*.ml test.ml
+exercise.o: exercise.ml
+	ocamlfind ocamlc -package oUnit -linkpkg -I ../exercise -g -o $@ ../exercise/*.ml exercise.ml
 
 clean:
-	rm -f *.cm[iox] test.bin *.log *.cache
+	rm -f *.cm[iox] *.o *.log *.cache
 	rm -f ../exercise/*.cm[iox]
