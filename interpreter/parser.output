@@ -1,0 +1,331 @@
+   0  $accept : %entry% $end
+
+   1  toplevel : Expr SEMISEMI
+
+   2  Expr : IfExpr
+   3       | LTExpr
+
+   4  LTExpr : PExpr LT PExpr
+   5         | PExpr
+
+   6  PExpr : PExpr PLUS MExpr
+   7        | MExpr
+
+   8  MExpr : MExpr MULT AExpr
+   9        | AExpr
+
+  10  AExpr : INTV
+  11        | TRUE
+  12        | FALSE
+  13        | ID
+  14        | LPAREN Expr RPAREN
+
+  15  IfExpr : IF Expr THEN Expr ELSE Expr
+
+  16  %entry% : '\001' toplevel
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . toplevel  (16)
+
+	LPAREN  shift 3
+	IF  shift 4
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	toplevel  goto 9
+	Expr  goto 10
+	IfExpr  goto 11
+	LTExpr  goto 12
+	PExpr  goto 13
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	AExpr : LPAREN . Expr RPAREN  (14)
+
+	LPAREN  shift 3
+	IF  shift 4
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	Expr  goto 16
+	IfExpr  goto 11
+	LTExpr  goto 12
+	PExpr  goto 13
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 4
+	IfExpr : IF . Expr THEN Expr ELSE Expr  (15)
+
+	LPAREN  shift 3
+	IF  shift 4
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	Expr  goto 17
+	IfExpr  goto 11
+	LTExpr  goto 12
+	PExpr  goto 13
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 5
+	AExpr : TRUE .  (11)
+
+	.  reduce 11
+
+
+state 6
+	AExpr : FALSE .  (12)
+
+	.  reduce 12
+
+
+state 7
+	AExpr : INTV .  (10)
+
+	.  reduce 10
+
+
+state 8
+	AExpr : ID .  (13)
+
+	.  reduce 13
+
+
+state 9
+	%entry% : '\001' toplevel .  (16)
+
+	.  reduce 16
+
+
+state 10
+	toplevel : Expr . SEMISEMI  (1)
+
+	SEMISEMI  shift 18
+	.  error
+
+
+state 11
+	Expr : IfExpr .  (2)
+
+	.  reduce 2
+
+
+state 12
+	Expr : LTExpr .  (3)
+
+	.  reduce 3
+
+
+state 13
+	LTExpr : PExpr . LT PExpr  (4)
+	LTExpr : PExpr .  (5)
+	PExpr : PExpr . PLUS MExpr  (6)
+
+	PLUS  shift 19
+	LT  shift 20
+	RPAREN  reduce 5
+	SEMISEMI  reduce 5
+	THEN  reduce 5
+	ELSE  reduce 5
+
+
+state 14
+	PExpr : MExpr .  (7)
+	MExpr : MExpr . MULT AExpr  (8)
+
+	MULT  shift 21
+	RPAREN  reduce 7
+	SEMISEMI  reduce 7
+	PLUS  reduce 7
+	LT  reduce 7
+	THEN  reduce 7
+	ELSE  reduce 7
+
+
+state 15
+	MExpr : AExpr .  (9)
+
+	.  reduce 9
+
+
+state 16
+	AExpr : LPAREN Expr . RPAREN  (14)
+
+	RPAREN  shift 22
+	.  error
+
+
+state 17
+	IfExpr : IF Expr . THEN Expr ELSE Expr  (15)
+
+	THEN  shift 23
+	.  error
+
+
+state 18
+	toplevel : Expr SEMISEMI .  (1)
+
+	.  reduce 1
+
+
+state 19
+	PExpr : PExpr PLUS . MExpr  (6)
+
+	LPAREN  shift 3
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	MExpr  goto 24
+	AExpr  goto 15
+
+
+state 20
+	LTExpr : PExpr LT . PExpr  (4)
+
+	LPAREN  shift 3
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	PExpr  goto 25
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 21
+	MExpr : MExpr MULT . AExpr  (8)
+
+	LPAREN  shift 3
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	AExpr  goto 26
+
+
+state 22
+	AExpr : LPAREN Expr RPAREN .  (14)
+
+	.  reduce 14
+
+
+state 23
+	IfExpr : IF Expr THEN . Expr ELSE Expr  (15)
+
+	LPAREN  shift 3
+	IF  shift 4
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	Expr  goto 27
+	IfExpr  goto 11
+	LTExpr  goto 12
+	PExpr  goto 13
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 24
+	PExpr : PExpr PLUS MExpr .  (6)
+	MExpr : MExpr . MULT AExpr  (8)
+
+	MULT  shift 21
+	RPAREN  reduce 6
+	SEMISEMI  reduce 6
+	PLUS  reduce 6
+	LT  reduce 6
+	THEN  reduce 6
+	ELSE  reduce 6
+
+
+state 25
+	LTExpr : PExpr LT PExpr .  (4)
+	PExpr : PExpr . PLUS MExpr  (6)
+
+	PLUS  shift 19
+	RPAREN  reduce 4
+	SEMISEMI  reduce 4
+	THEN  reduce 4
+	ELSE  reduce 4
+
+
+state 26
+	MExpr : MExpr MULT AExpr .  (8)
+
+	.  reduce 8
+
+
+state 27
+	IfExpr : IF Expr THEN Expr . ELSE Expr  (15)
+
+	ELSE  shift 28
+	.  error
+
+
+state 28
+	IfExpr : IF Expr THEN Expr ELSE . Expr  (15)
+
+	LPAREN  shift 3
+	IF  shift 4
+	TRUE  shift 5
+	FALSE  shift 6
+	INTV  shift 7
+	ID  shift 8
+	.  error
+
+	Expr  goto 29
+	IfExpr  goto 11
+	LTExpr  goto 12
+	PExpr  goto 13
+	MExpr  goto 14
+	AExpr  goto 15
+
+
+state 29
+	IfExpr : IF Expr THEN Expr ELSE Expr .  (15)
+
+	.  reduce 15
+
+
+16 terminals, 9 nonterminals
+17 grammar rules, 30 states
