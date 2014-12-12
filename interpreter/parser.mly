@@ -20,10 +20,10 @@ toplevel :
 Expr :
     IfExpr { $1 }
   | AssignExpr { $1 }
+  | OrExpr { $1 }
 
 AssignExpr :
     ID EQUAL OrExpr { BinOp(Equal, $1, $3) }
-  | OrExpr { $1 }
 
 OrExpr :
     AndExpr OR AndExpr { BinOp(Or, $1, $3) }
