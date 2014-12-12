@@ -147,6 +147,14 @@ let ex_6_9 =
   "prime">:: prime;]
 ;;
 
+let ex_7_2 =
+  let x = ref 334 in
+  let _ = Ex_7_2.incr x in
+  let incr _ = assert_equal !x 335 in
+  "ex_7_2">:::
+  ["incr">:: incr;]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -164,5 +172,9 @@ let _ =
   run_test_tt_main ex_5_6;
   run_test_tt_main ex_6_2;
   run_test_tt_main ex_6_6;
+(*
+  (* this test is too slow so it is disabled now *)
   run_test_tt_main ex_6_9;
+*)
+  run_test_tt_main ex_7_2;
 ;;
