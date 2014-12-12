@@ -155,6 +155,12 @@ let ex_7_2 =
   ["incr">:: incr;]
 ;;
 
+let ex_7_4 =
+  let fact _ = assert_equal (Ex_7_4.fact_imp 5) 120 in
+  "ex_7_4">:::
+  ["fact">:: fact;]
+;;
+
 let _ =
   run_test_tt_main ex_2_6_1;
   run_test_tt_main ex_2_6_2;
@@ -177,4 +183,5 @@ let _ =
   run_test_tt_main ex_6_9;
 *)
   run_test_tt_main ex_7_2;
+  run_test_tt_main ex_7_4;
 ;;
