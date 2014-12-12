@@ -18,6 +18,14 @@ toplevel :
 
 Expr :
     IfExpr { $1 }
+  | OrExpr { $1 }
+
+OrExpr :
+    AndExpr OR AndExpr { BinOp(Or, $1, $3) }
+  | AndExpr { $1 }
+
+AndExpr :
+    LTExpr AND LTExpr { BinOp(And, $1, $3) }
   | LTExpr { $1 }
 
 LTExpr :
