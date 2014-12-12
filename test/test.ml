@@ -162,8 +162,8 @@ let ex_7_4 =
 ;;
 
 let ex_7_8 =
-  let change1 _ = assert_equal (Ex_7_8.change ([50; 20; 10; 5; 2; 1] 43)) [20; 20; 2; 1] in
-  let change2 _ = assert_equal (Ex_7_8.change ([5; 2], 16)) [2; 2; 2; 2] in
+  let change1 _ = assert_equal (Ex_7_8.change ([50; 20; 10; 5; 2; 1], 43)) [20; 20; 2; 1] in
+  let change2 _ = assert_equal (Ex_7_8.change ([5; 2], 16)) [5; 5; 2; 2; 2] in
   "ex_7_8">:::
   ["change1">:: change1;
   "change2">:: change2;]
