@@ -15,6 +15,7 @@ rule main = parse
   (* ignore spacing and newline characters *)
   [' ' '\009' '\012' '\n']+     { main lexbuf }
 
+| "(*" { comment lexbuf }
 | "-"? ['0'-'9']+
     { Parser.INTV (int_of_string (Lexing.lexeme lexbuf)) }
 
@@ -36,3 +37,6 @@ rule main = parse
       _ -> Parser.ID id
      }
 | eof { exit 0 }
+| _ { main lexbuf }
+and comment = parse "*)" { main lexbuf }
+| _ { comment lexbuf }
