@@ -8,5 +8,16 @@ http://www.fos.kuis.kyoto-u.ac.jp/~nishida/classes/isle4fp2014/
 
 ```sh
 opam install ocamlfind ounit re
-make test
+```
+
+### Test excersize
+
+```sh
+make test-excersize
+```
+
+### Test interpreter
+
+```sh
+make test-interpreter
 ```
