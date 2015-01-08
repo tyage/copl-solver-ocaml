@@ -10,10 +10,10 @@ http://www.fos.kuis.kyoto-u.ac.jp/~nishida/classes/isle4fp2014/
 opam install ocamlfind ounit re
 ```
 
-### Test excersize
+### Test exercise
 
 ```sh
-make test-excersize
+make test-exercise
 ```
 
 ### Test interpreter
