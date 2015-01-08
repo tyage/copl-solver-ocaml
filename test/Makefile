@@ -7,7 +7,7 @@ test-interpreter: interpreter.o
 	./interpreter.o
 
 interpreter.o: interpreter.ml
-	cd ../interpreter && make depend
+	cd ../interpreter && make depend && make
 	ocamlfind ocamlc -package oUnit -linkpkg -I ../interpreter -g -o $@ syntax.cmo parser.cmo lexer.cmo environment.cmo eval.cmo interpreter.ml
 
 exercise.o: exercise.ml
