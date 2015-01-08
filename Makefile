@@ -1,6 +1,9 @@
 .PHONY: test clean
 
-test:
+test-exercise:
+	@$(MAKE) -C test $@
+
+test-interpreter:
 	@$(MAKE) -C test $@
 
 clean:
