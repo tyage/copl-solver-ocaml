@@ -8,3 +8,4 @@ test-interpreter:
 
 clean:
 	@$(MAKE) -C test $@
+	@$(MAKE) -C interpreter $@
