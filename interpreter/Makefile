@@ -49,11 +49,12 @@ clean:
 depend:: $(DEPEND)
 	$(OCAMLDEP) $(INCLUDES) -native *.mli *.ml > .depend
 
+-include .depend
+
+# Test
 test: test.o
 	./test.o
 
 test.o: test/interpreter.ml
 	make depend && make
 	ocamlfind ocamlc -package oUnit -linkpkg -g -o $@ syntax.cmo parser.cmo lexer.cmo environment.cmo eval.cmo test/interpreter.ml
-
--include .depend
