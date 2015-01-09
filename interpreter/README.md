@@ -11,3 +11,10 @@
 - Ex3.6 [**]
 - Ex3.8 [必修]
 - Ex3.14 [必修]
+
+## How to test
+
+```sh
+opam install ocamlfind ounit re
+make test
+```
