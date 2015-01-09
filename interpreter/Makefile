@@ -29,7 +29,7 @@ all: $(DEPEND) $(OBJS)
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
 
-parser.ml parser.mli: parser.mly	
+parser.ml parser.mli: parser.mly
 	@rm -f $@
 	$(OCAMLYACC) -v $<
 	@chmod -w $@
@@ -42,10 +42,18 @@ lexer.ml: lexer.mll
 # Clean up
 clean:
 	rm -f $(PROGNAME)
-	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml .depend
+	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml .depend *.log *.cache
+	cd test && make clean
 
 # Dependencies
 depend:: $(DEPEND)
 	$(OCAMLDEP) $(INCLUDES) -native *.mli *.ml > .depend
+
+test: test.o
+	./test.o
+
+test.o: test/interpreter.ml
+	make depend && make
+	ocamlfind ocamlc -package oUnit -linkpkg -g -o $@ syntax.cmo parser.cmo lexer.cmo environment.cmo eval.cmo test/interpreter.ml
 
 -include .depend
