@@ -5,7 +5,7 @@ open Typing
 let eval_print env tyenv lexer showError =
   (try
     let decl = Parser.toplevel Lexer.main lexer in
-    let ty = ty_decl tyenv decl in
+    let (s, ty) = ty_decl tyenv decl in
     let (id, newenv, v) = eval_decl env decl in
       Printf.printf "val %s : " id;
       pp_ty ty;

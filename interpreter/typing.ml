@@ -39,19 +39,10 @@ let rec unify = function
 
 let ty_prim op ty1 ty2 = match op with
     Plus -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
-  | Mult -> (match ty1, ty2 with
-        TyInt, TyInt -> TyInt
-      | _ -> err ("Argument must be of integer: *"))
-  | Lt -> (match ty1, ty2 with
-        TyInt, TyInt -> TyBool
-      | _ -> err ("Argument must be of integer: <"))
-  | And -> (match ty1, ty2 with
-        TyBool, TyBool -> TyBool
-      | _ -> err ("Argument must be of bool: &&"))
-  | Or -> (match ty1, ty2 with
-        TyBool, TyBool -> TyBool
-      | _ -> err ("Argument must be of bool: ||"))
-
+  | Mult -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
+  | Lt -> ([(ty1, TyInt); (ty2, TyInt)], TyBool)
+  | And -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
+  | Or -> ([(ty1, TyBool); (ty2, TyBool)], TyBool)
 
 let rec ty_exp tyenv = function
     Var x ->
@@ -66,17 +57,21 @@ let rec ty_exp tyenv = function
     let eqs = (eqs_of_subst s1) @ (eqs_of_subst s2) @ eqs3 in
     let s3 = unify eqs in (s3, subst_type s3 ty)
   | IfExp (exp1, exp2, exp3) ->
-    let tycond = ty_exp tyenv exp1 in
-    let tythen = ty_exp tyenv exp2 in
-    let tyelse = ty_exp tyenv exp3 in
-      (match tycond with
-          TyBool -> if tythen = tyelse then tythen else err ("Type of then expression and that of else expression must be same")
-        | _ -> err ("Condition must be of bool"))
+    let (scond, tycond) = ty_exp tyenv exp1 in
+    let (sthen, tythen) = ty_exp tyenv exp2 in
+    let (selse, tyelse) = ty_exp tyenv exp3 in
+    let eqs3 = [(tycond, TyBool); (tythen, tyelse)] in
+    let eqs = (eqs_of_subst scond) @ (eqs_of_subst sthen) @ (eqs_of_subst selse) @ eqs3 in
+    let s3 = unify eqs in (s3, subst_type s3 tythen)
   | LetExp (id, exp1, exp2) ->
-    let tyvalue = ty_exp tyenv exp1 in
-      ty_exp (Environment.extend id tyvalue tyenv) exp2
+    let (s1, ty1) = ty_exp tyenv exp1 in
+    let (s2, ty2) = ty_exp (Environment.extend id ty1 tyenv) exp2 in
+    let domty = TyVar (fresh_tyvar ()) in
+    let eqs3 = [(domty, ty1)] in
+    let eqs = (eqs_of_subst s1) @ eqs3 @ (eqs_of_subst s2) in
+    let s3 = unify eqs in (s3, subst_type s3 ty2)
   | FunExp (id, exp) ->
-    let domty = TryVar (fresh_tyvar ()) in
+    let domty = TyVar (fresh_tyvar ()) in
     let s, ranty =
       ty_exp (Environment.extend id domty tyenv) exp in
       (s, TyFun (subst_type s domty, ranty))
