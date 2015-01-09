@@ -6,7 +6,7 @@ open Syntax
 %token PLUS MULT LT
 %token IF THEN ELSE TRUE FALSE AND OR
 %token LET IN EQ
-%token RARROW FUN
+%token RARROW FUN REC
 
 %token <int> INTV
 %token <Syntax.id> ID
@@ -27,8 +27,8 @@ Expr :
   | FunExpr { $1 }
   | LetRecExpr { $1 }
 
-LetRecExpr
-  | LET REC ID EQ FUN ID RARROW Expr IN Expr { LetRecExp ($3, $6, $8, $10) }
+LetRecExpr :
+    LET REC ID EQ FUN ID RARROW Expr IN Expr { LetRecExp ($3, $6, $8, $10) }
 
 FunExpr :
     FUN ID RARROW Expr { FunExp($2, $4) }
