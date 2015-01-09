@@ -10,7 +10,7 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 PROGNAME=miniml
 
 # The list of object files for prog1
-OBJS=syntax.cmo parser.cmo lexer.cmo environment.cmo eval.cmo main.cmo
+OBJS=syntax.cmo parser.cmo lexer.cmo environment.cmo typing.cmo eval.cmo main.cmo
 
 DEPEND += lexer.ml parser.ml
 
@@ -57,4 +57,4 @@ test: test.o
 
 test.o: test/interpreter.ml
 	make depend && make
-	ocamlfind ocamlc -package oUnit -linkpkg -g -o $@ syntax.cmo parser.cmo lexer.cmo environment.cmo eval.cmo test/interpreter.ml
+	ocamlfind ocamlc -package oUnit -linkpkg -g -o $@ syntax.cmo parser.cmo lexer.cmo environment.cmo typing.cmo eval.cmo test/interpreter.ml
