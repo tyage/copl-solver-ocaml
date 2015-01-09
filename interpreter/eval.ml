@@ -73,4 +73,4 @@ let eval_decl env = function
     let v = ProcV (para, exp, dummyenv) in
     let newenv = Environment.extend id v env in
       dummyenv := newenv;
-      ("-", newenv, v)
+      (id, newenv, v)
