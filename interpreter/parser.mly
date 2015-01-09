@@ -18,12 +18,17 @@ open Syntax
 toplevel :
     Expr SEMISEMI { Exp $1 }
   | LET ID EQ Expr SEMISEMI { Decl ($2, $4) }
+  | LET REC ID EQ FUN ID RARROW Expr SEMISEMI { RecDecl ($3, $6, $8) }
 
 Expr :
     IfExpr { $1 }
   | LetExpr { $1 }
   | OrExpr { $1 }
   | FunExpr { $1 }
+  | LetRecExpr { $1 }
+
+LetRecExpr
+  | LET REC ID EQ FUN ID RARROW Expr IN Expr { LetRecExp ($3, $6, $8, $10) }
 
 FunExpr :
     FUN ID RARROW Expr { FunExp($2, $4) }
