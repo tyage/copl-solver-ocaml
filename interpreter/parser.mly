@@ -25,6 +25,9 @@ Expr :
   | OrExpr { $1 }
   | FunExpr { $1 }
 
+FunExpr :
+    FUN ID RARROW Expr { FunExp($2, $4) }
+
 LetExpr :
     LET ID EQ Expr IN Expr { LetExp($2, $4, $6) }
 
