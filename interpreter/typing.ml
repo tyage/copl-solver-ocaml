@@ -70,8 +70,9 @@ let rec unify = function
       TyInt, TyInt -> unify rest
     | TyBool, TyBool -> unify rest
     | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty11, ty12) :: (ty21, ty22) :: rest)
+    | TyVar var1, TyVar var2 -> if v1 = v2 then unify rest else (unify rest) @ [(var, ty2)]
     | TyVar var, _ -> if MySet.member var (Syntax.freevar_ty ty2) then err ("type err")
         else (unify rest) @ [(var, ty2)]
     | _, TyVar var -> if MySet.member var (Syntax.freevar_ty ty1) then err ("type err")
         else (unify rest) @ [(var, ty1)]
-    | a, b -> unify rest)
+    | _, _ -> unify rest)
