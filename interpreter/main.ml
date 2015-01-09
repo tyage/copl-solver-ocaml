@@ -9,12 +9,13 @@ let eval_print env tyenv lexer showError =
     let (id, newenv, v) = eval_decl env decl in
       Printf.printf "val %s : " id;
       pp_ty ty;
-      print_string " = "
+      print_string " = ";
       pp_val v;
       print_newline();
       newenv
     with Failure str -> showError str
     | Eval.Error str -> showError str
+    | Typing.Error str -> showError str
     | Parsing.Parse_error -> showError "parse error"
     | _ -> showError "Other Exception")
 
@@ -23,15 +24,15 @@ let rec read_eval_print env tyenv =
   flush stdout;
   let showError str = Printf.printf "%s" str;
     print_newline();
-    read_eval_print env in
+    read_eval_print env tyenv in
   let newenv = eval_print env tyenv (Lexing.from_channel stdin) showError in
-  read_eval_print newenv tyenv
+    read_eval_print newenv tyenv
 
 let file_eval_print filename env tyenv =
   let showError str = Printf.printf "%s" str;
     print_newline();
     env in
-  eval_print env tyenv (Lexing.from_channel (open_in filename)) showError
+    eval_print env tyenv (Lexing.from_channel (open_in filename)) showError
 
 let initial_env =
   Environment.extend "i" (IntV 1)
