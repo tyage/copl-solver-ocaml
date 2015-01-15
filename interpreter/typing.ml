@@ -9,8 +9,6 @@ type tyenv = ty Environment.t
 
 type subst = (tyvar * ty) list
 
-(* subst_eqs: subst -> (ty * ty) list -> (ty * ty) list
-型の等式集合に型代入を適用 *)
 let rec subst_type s typ =
   let rec resolve_type s = function
       TyVar v -> (try List.assoc v s with Not_found -> TyVar v)
@@ -28,15 +26,25 @@ let rec eqs_of_subst s = match s with
     [] -> []
   | (tyvar, ty) :: rest -> (TyVar tyvar, ty) :: eqs_of_subst rest
 
+(* subst_eqs: subst -> (ty * ty) list -> (ty * ty) list
+型の等式集合に型代入を適用 *)
+let rec subst_eqs s eqs = match eqs with
+    [] -> []
+  | (ty1, ty2) :: rest -> (subst_type s ty1, subst_type s ty2) :: (subst_eqs s rest)
+
 let rec unify = function
     [] -> []
   | (ty1, ty2) :: rest -> (match ty1, ty2 with
       TyInt, TyInt | TyBool, TyBool -> unify rest
     | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty12, ty22) :: (ty11, ty21) :: rest)
-    | TyVar var1, TyVar var2 -> if var1 = var2 then unify rest else (unify rest) @ [(var1, ty2)]
+    | TyVar var1, TyVar var2 ->
+      if var1 = var2 then unify rest
+      else let eqs = [(var1, ty2)] in
+        eqs @ (unify (subst_eqs eqs rest))
     | TyVar var, ty | ty, TyVar var ->
       if MySet.member var (Syntax.freevar_ty ty) then err ("type err")
-      else (unify rest) @ [(var, ty)]
+      else let eqs = [(var, ty)] in
+        eqs @ (unify (subst_eqs eqs rest))
     | _, _ -> err ("unify err"))
 
 let ty_prim op ty1 ty2 = match op with
