@@ -31,15 +31,13 @@ let rec eqs_of_subst s = match s with
 let rec unify = function
     [] -> []
   | (ty1, ty2) :: rest -> (match ty1, ty2 with
-      TyInt, TyInt -> unify rest
-    | TyBool, TyBool -> unify rest
+      TyInt, TyInt | TyBool, TyBool -> unify rest
     | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty11, ty12) :: (ty21, ty22) :: rest)
     | TyVar var1, TyVar var2 -> if var1 = var2 then unify rest else (unify rest) @ [(var1, ty2)]
-    | TyVar var, _ -> if MySet.member var (Syntax.freevar_ty ty2) then err ("type err")
-        else (unify rest) @ [(var, ty2)]
-    | _, TyVar var -> if MySet.member var (Syntax.freevar_ty ty1) then err ("type err")
-        else (unify rest) @ [(var, ty1)]
-    | _, _ -> unify rest)
+    | TyVar var, ty | ty, TyVar var ->
+      if MySet.member var (Syntax.freevar_ty ty) then err ("type err")
+      else (unify rest) @ [(var, ty)]
+    | _, _ -> err ("unify err"))
 
 let ty_prim op ty1 ty2 = match op with
     Plus -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
