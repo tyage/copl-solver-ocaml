@@ -27,7 +27,7 @@ type ty =
   | TyVar of tyvar
   | TyFun of ty * ty
 
-let pp_ty ty =
+let string_of_ty ty =
   let var_list = ref [] in
   let var_id =
     let body tyvar =
@@ -46,7 +46,9 @@ let pp_ty ty =
         | _ -> to_string ty1) in
       let string_ty2 = to_string ty2 in
         string_ty1 ^ " -> " ^ string_ty2
-  in print_string (to_string ty)
+  in to_string ty
+
+let pp_ty ty = print_string (string_of_ty ty)
 
 let fresh_tyvar =
   let counter = ref 0 in
