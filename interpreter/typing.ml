@@ -12,7 +12,7 @@ type subst = (tyvar * ty) list
 let rec subst_type s typ =
   let rec resolve_type s = function
       TyVar v -> (try List.assoc v s with Not_found -> TyVar v)
-    | TyFun (ty1, ty2) -> TyFun (subst_type s ty1, subst_type s ty2)
+    | TyFun (ty1, ty2) -> TyFun (resolve_type s ty1, resolve_type s ty2)
     | a -> a in
   let rec resolve_subst = function
       [] -> []
