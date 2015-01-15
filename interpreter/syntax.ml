@@ -32,7 +32,7 @@ let var_id =
   let body tyvar =
     let rec index_of counter = function
         [] -> var_list := !var_list @ [tyvar]; counter
-      | x :: rest -> if x == tyvar then counter else index_of (counter + 1) rest
+      | x :: rest -> if x = tyvar then counter else index_of (counter + 1) rest
     in index_of 0 !var_list
   in body
 
