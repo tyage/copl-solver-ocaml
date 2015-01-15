@@ -9,6 +9,8 @@ type tyenv = ty Environment.t
 
 type subst = (tyvar * ty) list
 
+(* subst_eqs: subst -> (ty * ty) list -> (ty * ty) list
+型の等式集合に型代入を適用 *)
 let rec subst_type s typ =
   let rec resolve_type s = function
       TyVar v -> (try List.assoc v s with Not_found -> TyVar v)
