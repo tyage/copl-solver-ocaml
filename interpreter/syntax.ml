@@ -41,7 +41,9 @@ let pp_ty ty =
     | TyBool -> "bool"
     | TyVar tyvar -> Printf.sprintf "'%c" (char_of_int ((int_of_char 'a') + (var_id tyvar)))
     | TyFun (ty1, ty2) ->
-      let string_ty1 = to_string ty1 in
+      let string_ty1 = (match ty1 with
+          TyFun (_, _) -> "(" ^ to_string ty1 ^ ")"
+        | _ -> to_string ty1) in
       let string_ty2 = to_string ty2 in
         string_ty1 ^ " -> " ^ string_ty2
   in print_string (to_string ty)
