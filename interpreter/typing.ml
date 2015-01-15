@@ -22,7 +22,7 @@ let rec subst_type s typ =
 
 (* eqs_of_subst : subst -> (ty * ty) list
 型代入を型の等式集合に変換 *)
-let eqs_of_subst s = match s with
+let rec eqs_of_subst s = match s with
     [] -> []
   | (tyvar, ty) :: rest -> (TyVar tyvar, ty) :: eqs_of_subst rest
 
