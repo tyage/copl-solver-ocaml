@@ -32,7 +32,7 @@ let rec unify = function
     [] -> []
   | (ty1, ty2) :: rest -> (match ty1, ty2 with
       TyInt, TyInt | TyBool, TyBool -> unify rest
-    | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty11, ty12) :: (ty21, ty22) :: rest)
+    | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty12, ty22) :: (ty11, ty21) :: rest)
     | TyVar var1, TyVar var2 -> if var1 = var2 then unify rest else (unify rest) @ [(var1, ty2)]
     | TyVar var, ty | ty, TyVar var ->
       if MySet.member var (Syntax.freevar_ty ty) then err ("type err")
