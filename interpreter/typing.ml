@@ -45,7 +45,7 @@ let rec unify = function
       if MySet.member var (Syntax.freevar_ty ty) then err ("type err")
       else let eqs = [(var, ty)] in
         eqs @ (unify (subst_eqs eqs rest))
-    | _, _ -> err ("unify err"))
+    | _, _ -> err ("type err"))
 
 let ty_prim op ty1 ty2 = match op with
     Plus -> ([(ty1, TyInt); (ty2, TyInt)], TyInt)
