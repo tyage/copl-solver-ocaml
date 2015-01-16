@@ -28,7 +28,7 @@ make test
 ### Ex3.1
 
 ```
-Exercise 3.1
+Exercise 3.1 [必修課題]
 ML1 インタプリタのプログラムをコンパイル・実行し，インタプリタの動作を確かめよ．
 大域環境として i, v, x の値のみが定義されているが，ii が 2，iii が 3，iv が 4 となるようにプログラムを変更して，動作を確かめよ．例えば，
 iv + iii * ii
@@ -52,7 +52,7 @@ let initial_env =
 ### Ex3.2
 
 ```
-Exercise 3.2
+Exercise 3.2 [**]
 このインタプリタは文法にあわない入力を与えたり，束縛されていない変数を参照しようとすると，プログラムの実行が終了してしまう．
 このような入力を与えた場合，適宜メッセージを出力して，インタプリタプロンプトに戻るように改造せよ．
 ```
@@ -85,7 +85,7 @@ let rec read_eval_print env =
 ### Ex3.3
 
 ```
-Exercise 3.3
+Exercise 3.3 [*]
 論理値演算のための二項演算子 &&, || を追加せよ．
 ```
 
@@ -113,7 +113,7 @@ Exercise 3.3
 +%token IF THEN ELSE TRUE FALSE AND OR
 ```
 
-その後、And, Orをparseして、 `eval.ml` のBinOpに渡され、BinOp内で正しく動作するようにする.
+その後、And, Orをparseした場合に `eval.ml` のBinOpに渡され、BinOp内で正しく動作するようにする.
 
 この際、式中の演算での優先順位は、ORが一番低く次にANDが来るようになるように注意する.
 
@@ -157,6 +157,30 @@ Exercise 3.3
 -type binOp = Plus | Mult | Lt
 +type binOp = Plus | Mult | Lt | And | Or
 ```
+
+### Ex3.4
+
+```
+Exercise 3.4 [必修課題]
+ML2 インタプリタを作成し，テストせよ．
+```
+
+テキストの資料図7に従ってML2インタプリタを作成した.
+
+テストに関しては `test/interpreter.ml` に `let x = 1;;` をテストするコードを作成した.
+
+```ocaml
+let test_let =
+  let decl = Parser.toplevel Lexer.main (Lexing.from_string "let x = 1;;") in
+  let (id, _, v) = Eval.eval_decl Environment.empty decl in
+  let check_id _ = assert_equal id "x" in
+  let check_val _ = assert_equal (Eval.string_of_exval v) "1" in
+  "test let">:::
+  ["check id">:: check_id;
+  "check val">:: check_val;]
+;;
+```
+
 
 ### Ex4.5
 
