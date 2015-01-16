@@ -165,7 +165,7 @@ Exercise 3.4 [必修課題]
 ML2 インタプリタを作成し，テストせよ．
 ```
 
-テキストの資料図7に従ってML2インタプリタを作成した.
+資料のテキストの図7に従ってML2インタプリタを作成した.
 
 テストに関しては `test/interpreter.ml` に `let x = 1;;` をテストするコードを作成し、通過することを確認した.
 
@@ -184,7 +184,7 @@ let test_let =
 ### Ex3.6
 
 ```
-Exercise 3.6
+Exercise 3.6 [**]
 バッチインタプリタを作成せよ．
 具体的には miniml コマンドの引数として ファイル名をとり，そのファイルに書かれたプログラムを評価し，結果をディスプレイに出力するように変更せよ．
 また，コメントを無視するよう実装せよ．(オプション: ;; で区切られたプログラムの列が読み込めるようにせよ．)
@@ -293,6 +293,57 @@ Exercise 3.6
 
 ### Ex3.8
 
+```
+Exercise 3.8 [必修課題]
+ML3 インタプリタを作成し，高階関数が正しく動作するかなどを含めてテストせよ．
+```
+
+テキストの図9に従い変更を加え、ML3インタプリタを作成した.
+
+また、いくつか変更点を加える事で正しく動作するようにした.
+
+関数を文字列化するため、 `string_of_exval` 関数に `ProcV` が与えられた場合に `"<fun>"` が返るようにした.
+
+```diff
+--- a/interpreter/eval.ml
++++ b/interpreter/eval.ml
+@@ -14,6 +14,7 @@ let err s = raise (Error s)
+ let rec string_of_exval = function
+     IntV i -> string_of_int i
+   | BoolV b -> string_of_bool b
++  | ProcV (_, _, _) -> "<fun>"
+```
+
+`FunExpr` をparserに追加し、 `FunExp` 関数が呼ばれるようにした.
+
+```diff
+--- a/interpreter/parser.mly
++++ b/interpreter/parser.mly
+@@ -25,6 +25,9 @@ Expr :
+   | OrExpr { $1 }
+   | FunExpr { $1 }
+
++FunExpr :
++    FUN ID RARROW Expr { FunExp($2, $4) }
++
+```
+
+また、高階関数のテストとして `test/interpreter.ml` に以下の様なテストを用意し、正しく動作することを確認した.
+
+```
+let test_fun =
+  let program = "let x = fun y -> y + 1 in x 4;;" in
+  let check_id _ = check_id_of_program program "-" in
+  let check_val _ = check_value_of_program program "5" in
+  let high_order_function = "let apply_one = fun f -> f 1 in let plus = fun x -> x + 1 in apply_one plus;;" in
+  let check_val_for_high_order_function _ = check_value_of_program high_order_function "2" in
+  "test fun">:::
+  ["check_id">:: check_id;
+  "check_val">:: check_val;
+  "check_val_for_high_order_function">:: check_val_for_high_order_function;]
+;;
+```
+
 ### Ex3.14
 
 ### Ex4.1
@@ -315,7 +366,8 @@ aとτが異なり、FTV(τ)にαが含まれている場合としては例え�
 (TyVar a, TyFun (TyVar a, TyInt))
 ```
 
-もし単一化アルゴリズムにおいて上記の条件がない場合、aの型が `TyFun (TyVar a, TyInt)` となるが、aが自身の型を内包するため型が無限に展開される
+もし単一化アルゴリズムにおいて上記の条件がない場合、aの型が `TyFun (TyVar a, TyInt)` となるが、
+aが自身の型を内包するため型が無限に展開される
 
 そのため、上記の条件をつけることにより、自身の型を含み無限展開される再帰的な型を生成しないようにしていると考えられる
 
