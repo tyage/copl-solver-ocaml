@@ -27,17 +27,20 @@ let test_let =
   let check_id _ = check_id_of_program program "x" in
   let check_val _ = check_value_of_program program "1" in
   "test let">:::
-  ["check id">:: check_id;
-  "check val">:: check_val;]
+  ["check_id">:: check_id;
+  "check_val">:: check_val;]
 ;;
 
 let test_fun =
   let program = "let x = fun y -> y + 1 in x 4;;" in
   let check_id _ = check_id_of_program program "-" in
   let check_val _ = check_value_of_program program "5" in
+  let high_order_function = "let apply_one = fun f -> f 1 in let plus = fun x -> x + 1 in apply_one plus;;" in
+  let check_val_for_high_order_function _ = check_value_of_program high_order_function "2" in
   "test fun">:::
-  ["check id">:: check_id;
-  "check val">:: check_val;]
+  ["check_id">:: check_id;
+  "check_val">:: check_val;
+  "check_val_for_high_order_function">:: check_val_for_high_order_function;]
 ;;
 
 let test_rec_fun =
