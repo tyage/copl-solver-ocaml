@@ -181,6 +181,127 @@ let test_let =
 ;;
 ```
 
+### Ex3.6
+
+```
+Exercise 3.6
+バッチインタプリタを作成せよ．
+具体的には miniml コマンドの引数として ファイル名をとり，そのファイルに書かれたプログラムを評価し，結果をディスプレイに出力するように変更せよ．
+また，コメントを無視するよう実装せよ．(オプション: ;; で区切られたプログラムの列が読み込めるようにせよ．)
+```
+
+引数に与えられたファイル名からファイルの内容を読み取り、そのプログラムを評価するように `main.ml` に変更を加えた.
+
+```diff
+--- a/interpreter/main.ml
++++ b/interpreter/main.ml
+@@ -1,24 +1,34 @@
+ open Syntax
+ open Eval
+
+-let rec read_eval_print env =
+-  print_string "# ";
+-  flush stdout;
+-  let showError str = Printf.printf "%s" str;
+-    print_newline();
+-    read_eval_print env in
++let eval_print env lexer showError =
+   (try
+-    let decl = Parser.toplevel Lexer.main (Lexing.from_channel stdin) in
++    let decl = Parser.toplevel Lexer.main lexer in
+     let (id, newenv, v) = eval_decl env decl in
+       Printf.printf "val %s = " id;
+       pp_val v;
+       print_newline();
+-      read_eval_print newenv
++      newenv
+     with Failure str -> showError str
+     | Eval.Error str -> showError str
+     | Parsing.Parse_error -> showError "parse error"
+     | _ -> showError "Other Exception")
+
++let rec read_eval_print env =
++  print_string "# ";
++  flush stdout;
++  let showError str = Printf.printf "%s" str;
++    print_newline();
++    read_eval_print env in
++  let newenv = eval_print env (Lexing.from_channel stdin) showError in
++  read_eval_print newenv
++
++let file_eval_print filename env =
++  let showError str = Printf.printf "%s" str;
++    print_newline();
++    env in
++  eval_print env (Lexing.from_channel (open_in filename)) showError
++
+ let initial_env =
+   Environment.extend "i" (IntV 1)
+     (Environment.extend "ii" (IntV 2)
+@@ -27,4 +37,6 @@ let initial_env =
+           (Environment.extend "v" (IntV 5)
+              (Environment.extend "x" (IntV 10) Environment.empty)))))
+-let _ = read_eval_print initial_env
++let _ =
++  if (Array.length Sys.argv) > 1 then file_eval_print Sys.argv.(1) initial_env
++  else read_eval_print initial_env
+```
+
+このプログラムでは引数がある場合は `file_eval_print` を、
+そうでない場合は従来通り `read_eval_print` を評価するようになっている.
+
+プログラムを評価し出力する部分に関しては `eval_print` 関数として用意してあり、
+`read_eval_print` は標準入力から渡された文字列を、
+`file_eval_print` はファイルの内容を `eval_print` 関数に渡すようにしてある.
+
+また、プログラムの評価時にエラーが発生した場合、 `file_eval_print` ではプログラムが終了し、
+ `read_eval_print` では従来通りインタプリタに戻るように設計してある.
+
+また、コメントを無視するように `lexer.mll` に以下のような変更を加えた
+
+```diff
+--- a/interpreter/lexer.mll
++++ b/interpreter/lexer.mll
+@@ -11,10 +11,14 @@ let reservedWords = [
+ ]
+ }
+
++let openComment = "(*"
++let closeComment = "*)"
++
+ rule main = parse
+   (* ignore spacing and newline characters *)
+   [' ' '\009' '\012' '\n']+     { main lexbuf }
+
++| openComment { comment 1 lexbuf }
+ | "-"? ['0'-'9']+
+     { Parser.INTV (int_of_string (Lexing.lexeme lexbuf)) }
+
+@@ -36,3 +40,8 @@ rule main = parse
+       _ -> Parser.ID id
+      }
+ | eof { exit 0 }
++| _ { main lexbuf }
++and comment depth = parse
++    openComment { comment (depth + 1) lexbuf }
++  | closeComment { if depth > 1 then comment (depth - 1) lexbuf else main lexbuf }
++  | _ { comment depth lexbuf }
+```
+
+入れ子になっているコメントにも対応するために `comment` 関数ではコメントの深さを引数に取り、
+コメントの深さが1になるまで無視するようにしてある.
+
+### Ex3.8
+
+### Ex3.14
+
+### Ex4.1
+
+### Ex4.2
+
+### Ex4.3
+
+### Ex4.4
 
 ### Ex4.5
 
@@ -197,3 +318,5 @@ aとτが異なり、FTV(τ)にαが含まれている場合としては例え�
 もし単一化アルゴリズムにおいて上記の条件がない場合、aの型が `TyFun (TyVar a, TyInt)` となるが、aが自身の型を内包するため型が無限に展開される
 
 そのため、上記の条件をつけることにより、自身の型を含み無限展開される再帰的な型を生成しないようにしていると考えられる
+
+### Ex4.6
