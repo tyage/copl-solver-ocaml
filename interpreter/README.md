@@ -89,20 +89,17 @@ Exercise 3.3
 論理値演算のための二項演算子 &&, || を追加せよ．
 ```
 
-`&&` と `||` がparserで AND と OR として解釈されるよう、 `parser.mly` と `lexer.mll` を変更する.
+`&&` と `||` が AND と OR としてparseされるよう、 `parser.mly` と `lexer.mll` を変更する.
 
 ```diff
 --- a/interpreter/lexer.mll
 +++ b/interpreter/lexer.mll
-@@ -6,7 +6,9 @@ let reservedWords = [
-  ("if", Parser.IF);
-  ("then", Parser.THEN);
-  ("true", Parser.TRUE);
--]
-+  ("&&", Parser.AND);
-+  ("||", Parser.OR);
-+]
-}
+@@ -24,6 +22,8 @@ rule main = parse
+ | "+" { Parser.PLUS }
+ | "*" { Parser.MULT }
+ | "<" { Parser.LT }
++| "&&" { Parser.AND }
++| "||" { Parser.OR }
 ```
 
 ```diff
@@ -116,7 +113,50 @@ Exercise 3.3
 +%token IF THEN ELSE TRUE FALSE AND OR
 ```
 
+その後、And, Orをparseして、 `eval.ml` のBinOpに渡され、BinOp内で正しく動作するようにする.
 
+この際、式中の演算での優先順位は、ORが一番低く次にANDが来るようになるように注意する.
+
+```diff
+--- a/interpreter/parser.mly
++++ b/interpreter/parser.mly
+@@ -18,6 +18,14 @@ toplevel :
+
+ Expr :
+     IfExpr { $1 }
++  | OrExpr { $1 }
++
++OrExpr :
++    AndExpr OR AndExpr { BinOp(Or, $1, $3) }
++  | AndExpr { $1 }
++
++AndExpr :
++    LTExpr AND LTExpr { BinOp(And, $1, $3) }
+```
+
+```diff
+--- a/interpreter/eval.ml
++++ b/interpreter/eval.ml
+@@ -23,21 +23,25 @@ let rec apply_prim op arg1 arg2 = match op, arg1, arg2 with
+   | Mult, _, _ -> err ("Both arguments must be integer: *")
+   | Lt, IntV i1, IntV i2 -> BoolV (i1 < i2)
+   | Lt, _, _ -> err ("Both arguments must be integer: <")
++  | And, BoolV b1, BoolV b2 -> BoolV (b1 && b2)
++  | And, _, _ -> err ("Both arguments must be bool: &&")
++  | Or, BoolV b1, BoolV b2 -> BoolV (b1 || b2)
++  | Or, _, _ -> err ("Both arguments must be bool: ||")
+```
+
+```diff
+--- a/interpreter/syntax.ml
++++ b/interpreter/syntax.ml
+@@ -1,7 +1,7 @@
+ (* ML interpreter / type reconstruction *)
+ type id = string
+
+-type binOp = Plus | Mult | Lt
++type binOp = Plus | Mult | Lt | And | Or
+```
 
 ### Ex4.5
 
