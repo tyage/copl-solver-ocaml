@@ -28,6 +28,7 @@ make test
 ### Ex3.1
 
 ```
+Exercise 3.1
 ML1 インタプリタのプログラムをコンパイル・実行し，インタプリタの動作を確かめよ．
 大域環境として i, v, x の値のみが定義されているが，ii が 2，iii が 3，iv が 4 となるようにプログラムを変更して，動作を確かめよ．例えば，
 iv + iii * ii
@@ -80,6 +81,42 @@ let rec read_eval_print env =
       | Parsing.Parse_error -> showError "parse error"
       | _ -> showError "Other Exception")
 ```
+
+### Ex3.3
+
+```
+Exercise 3.3
+論理値演算のための二項演算子 &&, || を追加せよ．
+```
+
+`&&` と `||` がparserで AND と OR として解釈されるよう、 `parser.mly` と `lexer.mll` を変更する.
+
+```diff
+--- a/interpreter/lexer.mll
++++ b/interpreter/lexer.mll
+@@ -6,7 +6,9 @@ let reservedWords = [
+  ("if", Parser.IF);
+  ("then", Parser.THEN);
+  ("true", Parser.TRUE);
+-]
++  ("&&", Parser.AND);
++  ("||", Parser.OR);
++]
+}
+```
+
+```diff
+--- a/interpreter/parser.mly
++++ b/interpreter/parser.mly
+@@ -4,7 +4,7 @@ open Syntax
+
+ %token LPAREN RPAREN SEMISEMI
+ %token PLUS MULT LT
+-%token IF THEN ELSE TRUE FALSE
++%token IF THEN ELSE TRUE FALSE AND OR
+```
+
+
 
 ### Ex4.5
 
