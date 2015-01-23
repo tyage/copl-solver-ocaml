@@ -559,6 +559,41 @@ val freevar_ty : ty -> tyvar MySet.t
 
 ### Ex4.3
 
+```
+Exercise 4.3 [必修課題]
+型代入に関する以下の型，関数を typing.ml 中に実装せよ．
+  type subst = (tyvar * ty) list
+  val subst_type : subst -> ty -> ty
+型代入を表す型 subst は型変数と型のペアのリスト [(id1,ty1); ...; (idn,tyn)] で表現する．
+このリストは [idn 7→ tyn] ◦ · · · ◦ [id1 7→ ty1] という型代入を表す．
+順番が反転していること，また，代入の合成を表すので，ty1 に現れる型変数は後続のリストの表す型代入の影響を受けることに注意すること．
+例えば，
+  let alpha = fresh_tyvar () in
+  subst_type [(alpha, TyInt)] (TyFun (TyVar alpha, TyBool))
+の値は TyFun (TyInt, TyBool) になり，
+  let alpha = fresh_tyvar () in
+  let beta = fresh_tyvar () in
+  subst_type [(beta, (TyFun (TyVar alpha, TyInt))); (alpha, TyBool)] (TyVar beta)
+の値は TyFun (TyBool, TyInt) になる．
+```
+
+subst_typeでは末尾の型代入から、自身より前の型代入に適用し、それにより新しく出来た型代入を型変数に適用すればよい。
+
+```ocaml
+type subst = (tyvar * ty) list
+
+let rec subst_type s typ =
+  let rec resolve_type s = function
+      TyVar v -> (try List.assoc v s with Not_found -> TyVar v)
+    | TyFun (ty1, ty2) -> TyFun (resolve_type s ty1, resolve_type s ty2)
+    | a -> a in
+  let rec resolve_subst = function
+      [] -> []
+    | (id, typ) :: rest -> let new_subst = resolve_subst rest in
+        ((id, resolve_type new_subst typ) :: new_subst) in
+  resolve_type (resolve_subst s) typ
+```
+
 ### Ex4.4
 
 ### Ex4.5
