@@ -524,7 +524,7 @@ Exercise 4.1 [必修課題]
 Exercise 4.2 [必修課題]
 図 13 中の pp_ty，freevar_ty を完成させよ．
 freevar_ty は，与えられた型中の型変数の集合を返す関数で，型は
-val freevar_ty : ty -> tyvar MySet.t
+  val freevar_ty : ty -> tyvar MySet.t
 とする．
 型 ’a MySet.t は (実験 WWW ページにある) mySet.mli で定義されている ’a を要素とする集合を表す型である．
 ```
@@ -596,9 +596,44 @@ let rec subst_type s typ =
 
 ### Ex4.4
 
+```
+Exercise 4.4 [必修課題]
+上の単一化アルゴリズムを
+  val unify : (ty * ty) list -> subst
+として実装せよ．
+```
+
+資料の単一化アルゴリズムを `(ty * ty)` の形式に当てはめていく
+
+`U({(τ, τ )} ⊎ X)` は `TyInt, TyInt` や `TyBool, TyBool` のパターン、また同一変数のペアが当てはまる。
+
+`U({(τ11 → τ12, τ21 → τ22)} ⊎ X)` は `TyFun (ty11, ty12), TyFun (ty21, ty22)` が当てはまる。
+
+`U({(α, τ )} ⊎ X) (if τ ̸= α)` は `TyVar var1, TyVar var2` で、var1とvar2が異なる場合と、TyVarとそれ以外のペアが当てはまる。
+
+これを元に実装した場合以下のようになった。
+
+```ocaml
+let rec unify = function
+    [] -> []
+  | (ty1, ty2) :: rest -> (match ty1, ty2 with
+      TyInt, TyInt | TyBool, TyBool -> unify rest
+    | TyFun (ty11, ty12), TyFun (ty21, ty22) -> unify ((ty12, ty22) :: (ty11, ty21) :: rest)
+    | TyVar var1, TyVar var2 ->
+      if var1 = var2 then unify rest
+      else let eqs = [(var1, ty2)] in
+        eqs @ (unify (subst_eqs eqs rest))
+    | TyVar var, ty | ty, TyVar var ->
+      if MySet.member var (Syntax.freevar_ty ty) then err ("type err")
+      else let eqs = [(var, ty)] in
+        eqs @ (unify (subst_eqs eqs rest))
+    | _, _ -> err ("type err"))
+```
+
 ### Ex4.5
 
 ```
+Exercise 4.5 [必修課題]
 単一化アルゴリズムにおいて，α ̸∈ FTV(τ) という条件はなぜ必要か考察せよ．
 ```
 
