@@ -330,7 +330,7 @@ ML3 インタプリタを作成し，高階関数が正しく動作するかな�
 
 また、高階関数のテストとして `test/interpreter.ml` に以下の様なテストを用意し、正しく動作することを確認した.
 
-```
+```ocaml
 let test_fun =
   let program = "let x = fun y -> y + 1 in x 4;;" in
   let check_id _ = check_id_of_program program "-" in
@@ -345,6 +345,120 @@ let test_fun =
 ```
 
 ### Ex3.14
+
+```
+図に示した syntax.ml にしたがって，parser.mly と lexer.mll
+を完成させ，ML4 インタプリタを作成し，テストせよ．(let rec 宣言も実装すること．)
+```
+
+テキストに従い `parser.mly` と `lexer.mll` に変更を加えた。
+
+```diff
+--- a/interpreter/lexer.mll
++++ b/interpreter/lexer.mll
+@@ -9,6 +9,7 @@ let reservedWords = [
+   ("let", Parser.LET);
+   ("in", Parser.IN);
+   ("fun", Parser.FUN);
++  ("rec", Parser.REC);
+ ]
+ }
+```
+
+```diff
+--- a/interpreter/parser.mly
++++ b/interpreter/parser.mly
+@@ -6,7 +6,7 @@ open Syntax
+ %token PLUS MULT LT
+ %token IF THEN ELSE TRUE FALSE AND OR
+ %token LET IN EQ
+-%token RARROW FUN
++%token RARROW FUN REC
+
+ %token <int> INTV
+ %token <Syntax.id> ID
+@@ -18,12 +18,17 @@ open Syntax
+ toplevel :
+     Expr SEMISEMI { Exp $1 }
+   | LET ID EQ Expr SEMISEMI { Decl ($2, $4) }
++  | LET REC ID EQ FUN ID RARROW Expr SEMISEMI { RecDecl ($3, $6, $8) }
+
+ Expr :
+     IfExpr { $1 }
+   | LetExpr { $1 }
+   | OrExpr { $1 }
+   | FunExpr { $1 }
++  | LetRecExpr { $1 }
++
++LetRecExpr :
++    LET REC ID EQ FUN ID RARROW Expr IN Expr { LetRecExp ($3, $6, $8, $10) }
+
+ FunExpr :
+     FUN ID RARROW Expr { FunExp($2, $4) }
+```
+
+また、 `RecDecl` を `eval.ml` に実装する必要があるため、 `eval.ml` にも変更を加えた。
+
+```diff
+--- a/interpreter/eval.ml
++++ b/interpreter/eval.ml
+@@ -3,7 +3,7 @@ open Syntax
+ type exval =
+     IntV of int
+   | BoolV of bool
+-  | ProcV of id * exp * dnval Environment.t
++  | ProcV of id * exp * dnval Environment.t ref
+ and dnval = exval
+
+ exception Error of string
+@@ -49,17 +49,28 @@ let rec eval_exp env = function
+   | LetExp (id, exp1, exp2) ->
+       let value = eval_exp env exp1 in
+           eval_exp (Environment.extend id value env) exp2
+-  | FunExp (id, exp) -> ProcV (id, exp, env)
++  | FunExp (id, exp) -> ProcV (id, exp, ref env)
+   | AppExp (exp1, exp2) ->
+     let funval = eval_exp env exp1 in
+     let arg = eval_exp env exp2 in
+       (match funval with
+           ProcV (id, body, env') ->
+-            let newenv = Environment.extend id arg env' in
++            let newenv = Environment.extend id arg env'.contents in
+               eval_exp newenv body
+         | _ -> err ("Non-function value is applied"))
++  | LetRecExp (id, para, exp1, exp2) ->
++    let dummyenv = ref Environment.empty in
++    let newenv = Environment.extend id (ProcV (para, exp1, dummyenv)) env in
++      dummyenv := newenv;
++      eval_exp newenv exp2
+
+ let eval_decl env = function
+     Exp e -> let v = eval_exp env e in ("-", env, v)
+   | Decl (id, e) ->
+     let v = eval_exp env e in (id, Environment.extend id v env, v)
++  | RecDecl (id, para, exp) ->
++    let dummyenv = ref Environment.empty in
++    let v = ProcV (para, exp, dummyenv) in
++    let newenv = Environment.extend id v env in
++      dummyenv := newenv;
++      ("-", newenv, v)
+```
+
+また、テストには以下の様なものを書いた。
+
+```ocaml
+let test_rec_fun =
+  let let_rec_exp = "let rec x = fun y -> if y < 1 then 1 else (x (y  + (-1))) * y in x 4;;" in
+  let check_id_for_let_rec_exp _ = check_id_of_program let_rec_exp "-" in
+  let check_val_for_let_rec_exp _ = check_value_of_program let_rec_exp "24" in
+  let rec_decl = "let rec x = fun y -> x 1;;" in
+  let check_id_for_rec_decl _ = check_id_of_program rec_decl "x" in
+  "test rec fun">:::
+  ["check_id_for_let_rec_exp">:: check_id_for_let_rec_exp;
+  "check_val_for_let_rec_exp">:: check_val_for_let_rec_exp;
+  "check_id_for_rec_decl">:: check_id_for_rec_decl;]
+;;
+```
 
 ### Ex4.1
 
