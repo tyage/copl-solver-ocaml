@@ -347,6 +347,7 @@ let test_fun =
 ### Ex3.14
 
 ```
+Exercise 3.14 [必修課題]
 図に示した syntax.ml にしたがって，parser.mly と lexer.mll
 を完成させ，ML4 インタプリタを作成し，テストせよ．(let rec 宣言も実装すること．)
 ```
@@ -462,7 +463,99 @@ let test_rec_fun =
 
 ### Ex4.1
 
+```
+Exercise 4.1 [必修課題]
+図 11, 図 12 に示すコードを参考にして，型推論アルゴリズムを完成させよ．
+ (ソースファイルとして typing.ml を追加するので，make depend の実行を一度行うこと．)
+```
+
+資料にあるコードを元に `typing.ml` を追加した後、 ConsやMultの型推論などが不十分なため修正した。
+
+```diff
+--- a/interpreter/typing.ml
++++ b/interpreter/typing.ml
+@@ -11,8 +11,18 @@ let ty_prim op ty1 ty2 = match op with
+     Plus -> (match ty1, ty2 with
+         TyInt, TyInt -> TyInt
+       | _ -> err ("Argument must be of integer: +"))
+-  ...
+-  | Cons -> err "Not Implemented!"
++  | Mult -> (match ty1, ty2 with
++        TyInt, TyInt -> TyInt
++      | _ -> err ("Argument must be of integer: *"))
++  | Lt -> (match ty1, ty2 with
++        TyInt, TyInt -> TyBool
++      | _ -> err ("Argument must be of integer: <"))
++  | And -> (match ty1, ty2 with
++        TyBool, TyBool -> TyBool
++      | _ -> err ("Argument must be of bool: &&"))
++  | Or -> (match ty1, ty2 with
++        TyBool, TyBool -> TyBool
++      | _ -> err ("Argument must be of bool: ||"))
+
+ let rec ty_exp tyenv = function
+     Var x ->
+@@ -25,11 +35,18 @@ let rec ty_exp tyenv = function
+     let tyarg2 = ty_exp tyenv exp2 in
+       ty_prim op tyarg1 tyarg2
+   | IfExp (exp1, exp2, exp3) ->
+-    ...
++    let tycond = ty_exp tyenv exp1 in
++    let tythen = ty_exp tyenv exp2 in
++    let tyelse = ty_exp tyenv exp3 in
++      (match tycond with
++          TyBool -> if tythen = tyelse then tythen else err ("Type of then expression and that of else expression must be same")
++        | _ -> err ("Condition must be of bool"))
+   | LetExp (id, exp1, exp2) ->
+-    ...
++    let tyvalue = ty_exp tyenv exp1 in
++      ty_exp (Environment.extend id tyvalue tyenv) exp2
+   | _ -> err ("Not Implemented!")
+
+ let ty_decl tyenv = function
+     Exp e -> ty_exp tyenv e
++  | Decl (id, e) -> ty_exp tyenv e
+   | _ -> err ("Not Implemented!")
+```
+
 ### Ex4.2
+
+```
+Exercise 4.2 [必修課題]
+図 13 中の pp_ty，freevar_ty を完成させよ．
+freevar_ty は，与えられた型中の型変数の集合を返す関数で，型は
+val freevar_ty : ty -> tyvar MySet.t
+とする．
+型 ’a MySet.t は (実験 WWW ページにある) mySet.mli で定義されている ’a を要素とする集合を表す型である．
+```
+
+`pp_ty` では、TyVarとTyFunのパターンを追加した。 (TyVarでは `'a` と、 TyFunでは `ty1 -> ty2` と返す)
+
+`freevar_ty` では`TyVar var`のパターンでは `Myset.singleton var` を、`TyFun (ty1, ty2)`
+のパターンではty1とty2の型変数の集合を合成して返すようにした。
+
+```diff
+--- a/interpreter/syntax.ml
++++ b/interpreter/syntax.ml
+@@ -19,10 +19,31 @@ type program =
+   | Decl of id * exp
+   | RecDecl of id * id * exp
+
+-let pp_ty = function
++let rec pp_ty = function
+     TyInt -> print_string "int"
+   | TyBool -> print_string "bool"
++  | TyVar _ -> print_string "'a"
++  | TyFun (ty1, ty2) ->
++    pp_ty ty1;
++    print_string " -> ";
++    pp_ty ty2
++
++let rec freevar_ty ty = (match ty with
++    TyVar var -> MySet.singleton var
++  | TyFun (ty1, ty2) -> MySet.union (freevar_ty ty1) (freevar_ty ty2)
++  | _ -> MySet.empty)
+```
 
 ### Ex4.3
 
